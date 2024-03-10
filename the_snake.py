@@ -47,8 +47,8 @@ class GameObject:
 
     def __init__(self):
         """Инициализация игрового объекта.
-
-                Устанавливает начальные значения атрибутов объекта."""
+        Устанавливает начальные значения атрибутов объекта.
+        """
         self.next_direction = None
         self.body_color = None
         self.position = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
@@ -56,9 +56,9 @@ class GameObject:
 
     def handle_keys(self):
         """Обработка нажатий клавиш для управления объектом.
-
-                Проверяет события нажатия клавиш
-                и устанавливает следующее направление объекта."""
+        Проверяет события нажатия клавиш
+        и устанавливает следующее направление объекта.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -75,9 +75,9 @@ class GameObject:
 
     def update_direction(self):
         """Обновление направления объекта.
-
-                Если установлено следующее направление,
-                присваивает текущему."""
+        Если установлено следующее направление,
+        присваивает текущему.
+        """
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
@@ -89,9 +89,9 @@ class Apple(GameObject):
 
     def __init__(self):
         """Инициализация яблока.
-
-               Устанавливает начальные значения и цвет яблока,
-               а также случайную позицию."""
+        Устанавливает начальные значения и цвет яблока,
+        а также случайную позицию.
+        """
         super().__init__()
         self.body_color = APPLE_COLOR
         self.randomize_position()
@@ -115,12 +115,10 @@ class Snake(GameObject):
     """Класс Змейки, наследуется от класса GameObject."""
 
     def __init__(self):
+        """Инициализация змейки.
+        Устанавливает начальные значения атрибутов змейки,
+        включая длину, позиции, направление и цвет.
         """
-                Инициализация змейки.
-
-                Устанавливает начальные значения атрибутов змейки,
-                включая длину, позиции, направление и цвет.
-                """
         super().__init__()
         self.last = None
         self.length = 1
@@ -130,7 +128,6 @@ class Snake(GameObject):
 
     def move(self):
         """Движение змейки."""
-
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
@@ -157,7 +154,6 @@ class Snake(GameObject):
 
     def draw(self, surface):
         """Отрисовка змейки на экране."""
-
         for pos in self.positions:
             rect = pygame.Rect(pos, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(surface, self.body_color, rect)
@@ -169,9 +165,9 @@ class Snake(GameObject):
 
     def reset(self):
         """Сброс змейки в начальное состояние.
-
-                Устанавливает длину, позиции,
-                направление и следующее направление в начальные значения."""
+        Устанавливает длину, позиции,
+        направление и следующее направление в начальные значения.
+        """
         self.length = 1
         self.positions = [self.position.copy()]
         self.direction = RIGHT
@@ -180,11 +176,11 @@ class Snake(GameObject):
 
 def main():
     """Основная функция программы.
-
-        Создает экземпляры змейки и яблока, инициализирует игровой цикл,
-        отображает экран и обрабатывает действия
-        игрока."""
-
+    Создает экземпляры змейки и яблока,
+    инициализирует игровой цикл,
+    отображает экран и обрабатывает действия
+    игрока.
+    """
     snake = Snake()
     apple = Apple()
 
