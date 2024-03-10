@@ -142,7 +142,7 @@ class Snake(GameObject):
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
 
-        # Перемещение змейки на противоположную сторону, если выходит за границы
+        # Перемещение змейки на противоположную сторону
         if new_head[0] < 0:
             new_head[0] = SCREEN_WIDTH - GRID_SIZE
         elif new_head[0] >= SCREEN_WIDTH:
