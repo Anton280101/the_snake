@@ -1,6 +1,8 @@
 import pygame
 from random import randint
 
+from pygame import display
+
 # Инициализация PyGame:
 pygame.init()
 
@@ -54,24 +56,9 @@ class GameObject:
         self.position = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
         self.direction = None
 
-    def handle_keys(self):
-        """Обработка нажатий клавиш для управления объектом.
-        Проверяет события нажатия клавиш
-        и устанавливает следующее направление объекта.
-        """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                raise SystemExit
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP and self.direction != DOWN:
-                    self.next_direction = UP
-                elif event.key == pygame.K_DOWN and self.direction != UP:
-                    self.next_direction = DOWN
-                elif event.key == pygame.K_LEFT and self.direction != RIGHT:
-                    self.next_direction = LEFT
-                elif event.key == pygame.K_RIGHT and self.direction != LEFT:
-                    self.next_direction = RIGHT
+    def draw(self, surface):
+        """Метод для отображения игрового объекта на экране."""
+        pass
 
     def update_direction(self):
         """Обновление направления объекта.
@@ -174,6 +161,23 @@ class Snake(GameObject):
         self.next_direction = None
 
 
+def handle_keys(game_object):
+    """Обработка нажатий клавиш для управления объектом."""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            raise SystemExit
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and game_object.direction != DOWN:
+                game_object.next_direction = UP
+            elif event.key == pygame.K_DOWN and game_object.direction != UP:
+                game_object.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
+                game_object.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
+                game_object.next_direction = RIGHT
+
+
 def main():
     """Основная функция программы.
     Создает экземпляры змейки и яблока,
@@ -186,12 +190,14 @@ def main():
 
     screen.fill(BOARD_BACKGROUND_COLOR)
     apple.randomize_position()
+    if not display.get_init():
+        display.init()
 
     while True:
         clock.tick(SPEED)
         screen.fill(BOARD_BACKGROUND_COLOR)
 
-        snake.handle_keys()
+        handle_keys(snake)
         snake.update_direction()
         snake.move()
 
