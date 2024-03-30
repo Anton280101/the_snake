@@ -65,7 +65,7 @@ class GameObject:
         """Метод для отображения игрового объекта на экране."""
         raise NotImplementedError(
                'Метод draw должен быть переопределен в подклассе'
-               )
+        )
 
 
 class Apple(GameObject):
