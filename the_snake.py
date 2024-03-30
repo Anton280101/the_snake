@@ -1,4 +1,5 @@
 from random import choice, randint
+
 import pygame as pg
 
 # Константы для размеров поля и сетки:
@@ -55,26 +56,35 @@ class GameObject:
     def draw_cell(self, surface, position):
         """Создание ячейки."""
         rect = pg.Rect(position, (GRID_SIZE, GRID_SIZE,))
-        pg.draw.rect(surface, self.body_color, rect)
+        if self.body_color != BOARD_BACKGROUND_COLOR:
+            pg.draw.rect(surface, self.body_color, rect)
+        else:
+            pg.draw.rect(surface, BORDER_COLOR, rect, 1)
 
     def draw(self, surface):
         """Метод для отображения игрового объекта на экране."""
-        raise NotImplementedError('Метод draw переопредели в подклассе')
+        raise NotImplementedError(
+               'Метод draw должен быть переопределен в подклассе'
+               )
 
 
 class Apple(GameObject):
     """Класс для яблока, наследуется от GameObject."""
 
-    def __init__(self, bg_color=APPLE_COLOR):
+    def __init__(self, bg_color=APPLE_COLOR, occupied_cells=()):
         super().__init__(bg_color)
-        self.randomize_position()
+        self.occupied_cells = occupied_cells
+        self.randomize_position(self.occupied_cells)
 
-    def randomize_position(self):
+    def randomize_position(self, occupied_cells):
         """Реализация случайного появления яблока."""
-        self.position = (
-            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-        )
+        while True:
+            self.position = (
+                randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+                randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+            )
+            if self.position not in occupied_cells:
+                break
 
     def draw(self, surface):
         """Метод draw класса Apple."""
@@ -99,9 +109,9 @@ class Snake(GameObject):
     def move(self):
         """Движение змейки."""
         head_x, head_y = self.get_head_position()
-        xd, yd = self.direction
-        x_new = (GRID_SIZE * xd + head_x) % SCREEN_WIDTH
-        y_new = (GRID_SIZE * yd + head_y) % SCREEN_HEIGHT
+        x_direction, y_direction = self.direction
+        x_new = (GRID_SIZE * x_direction + head_x) % SCREEN_WIDTH
+        y_new = (GRID_SIZE * y_direction + head_y) % SCREEN_HEIGHT
 
         self.positions.insert(0, (x_new, y_new))
         if len(self.positions) > self.length:
@@ -159,8 +169,6 @@ def main():
 
     while True:
         clock.tick(SPEED)
-        apple.draw(screen)
-        snake.draw(screen)
         handle_keys(snake)
         snake.update_direction()
         snake.move()
@@ -168,11 +176,14 @@ def main():
         if snake.get_head_position() in snake.positions[2:]:
             snake.reset()
             screen.fill(BOARD_BACKGROUND_COLOR)
+            apple.randomize_position(snake.positions)
 
         if snake.get_head_position() == apple.position:
             snake.length += 1
-            apple.randomize_position()
-            apple.draw(screen)
+            apple.randomize_position(snake.positions)
+
+        apple.draw(screen)
+        snake.draw(screen)
 
         pg.display.update()
 
